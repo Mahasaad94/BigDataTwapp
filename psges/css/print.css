@@ -1,0 +1,136 @@
+/*
+    Johnson County Community College
+    Summer 2018
+
+     Web 110 Final Project
+     The Internet of Things - Research Topic
+     Author: Mehmet Acikgoz
+     Date:  July 26, 2018
+
+     Filename: print.css
+*/
+
+/*Global settings*/
+* { box-sizing: border-box; } 
+header, main, nav, footer, figure, figcaption, aside, section, article { display: block; }
+
+body {font-family: Verdana, Arial, sans-serif;
+	  background-color: #B8DBED; 
+}
+
+/*style for the wrapper*/
+#wrapper {  width: 100%; } 
+
+h2 { font-size: 1.1em; }
+ 
+header { color: #000000; font-size: 100%; }
+
+h1 { text-align: center;
+     /*font-size: 250%;*/
+	 font-size: 3em; 
+	 padding: 2% 0;
+	 margin: 1%;
+	 color: white;
+}
+nav { display: none; }
+  
+nav ul { list-style-type: none;  font-size: 1.0em; }
+nav a { text-decoration: none; line-height: 200%;}
+nav a:link { color: #330000; }
+nav a:visited { color: #003300; }
+nav a:hover { color: #996600; }
+
+
+#home_p, #research_p { display: none; }
+
+main { font-family: "Times New Roman", serif; font-size: 100%; }
+
+main ol {	 display: block; padding-left: 3%;}
+
+/* horizontal nav bar at the end of pages */
+.bottomNav {
+	list-style-type: none;  
+	text-align: center;
+	text-decoration: none;
+	
+}
+
+footer { text-align: center;
+         font-size: 80%;
+		 font-style: italic;
+		 color: #003300;
+		 padding: 2%;
+	     clear: both; 
+}
+
+
+.reference { /*Reference page links Decoration*/
+	
+		    display: block;
+		    list-style-type: none;
+		    margin-bottom: 10px;
+		    font-weight: bold;
+		    font-size: 0.9em;		
+}
+
+/* Settings for the tablets */		
+@media only screen and (max-width: 64em){
+	body { margin: 0; 
+	}
+	#wrapper { min-width: 0; 
+	           width: auto; 
+	           box-shadow: none; 
+	           border: none; 
+	}
+    h1 { margin: 0; }
+	main { width: 100%; margin-left: 0; }
+	nav { float: none; 
+	      width: auto; 
+		  		     margin-top: 0;	
+	      text-align: center;
+		  padding: 0;
+	      padding-top: 0.5em;
+
+	}
+	nav ul { padding-left: 0; }
+	nav li { display: inline;  
+	         padding:0.25em 0.75em; 			 
+	}
+	#home_p, #research_p { margin-left: 0; height: 200px; }
+	footer { margin-left: 0; }	
+}
+
+/* Settings for the mobile devices */	
+@media only screen and (max-width: 37.5em){
+	main { padding:0.1em 1em; 
+        font-size: 90%; 
+    } 
+	h1 { font-size: 2em; }
+	nav { padding: 0; }
+	nav li { display: block; 
+	         margin: 0; 
+	         /*border-bottom: 2px solid #330000; */
+	}
+	nav a { display: block; }
+	#home_p, #research_p { 
+	   display: none; 	  
+	   background-image: none; 
+	   height: 0;  
+	}
+}
+
+	
+table, td, th { border: 2px solid black;
+        border-collapse: collapse;	
+		width:100%;		
+		line-height: 100%;
+}
+table caption { text-align: left;}
+
+td, th { padding: 0.5em;}
+
+td { text-align: right; }
+
+.text { text-align: left; }
+
+tr:nth-of-type(odd) { background: #F5FAFC; }
