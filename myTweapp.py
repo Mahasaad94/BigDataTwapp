@@ -3,7 +3,6 @@ import os
 import conda
 
 
-from pyspark import SparkContext, sparkConf
 #import  pyspark
 import findspark
 #findspark.init('/path_to_spark/spark-x.x.x-bin-hadoopx.x')
