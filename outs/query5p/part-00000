@@ -1,5 +1,0 @@
-Row(time_in_hour=None, count=141)
-Row(time_in_hour=u'12:00', count=2197)
-Row(time_in_hour=u'12:01', count=2932)
-Row(time_in_hour=u'12:02', count=2868)
-Row(time_in_hour=u'12:03', count=1862)

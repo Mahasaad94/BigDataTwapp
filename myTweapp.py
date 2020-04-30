@@ -1,7 +1,9 @@
 import sys
 import os
 import conda
-
+import flask
+from flask import Flask, request
+from flask import Flask, render_template
 
 #import  pyspark
 import findspark
@@ -40,31 +42,33 @@ def query1():
     filename = "query1p"
     folder = init_folder(filename)
 
-    df = spark.sql("SELECT  place.country, count(*) AS c from table WHERE place.country is not null GROUP BY Place.country ORDER BY c DESC")
-    x = df.toPandas()["country"].values.tolist()[:10]
+    df = spark.sql("SELECT  place.country_code, count(*) AS c from table WHERE place.country_code is not null GROUP BY place.country_code ORDER BY c DESC")
+    x = df.toPandas()["country_code"].values.tolist()[:10]
     y = df.toPandas()["c"].values.tolist()[:10]
     total_number_of_tweets = sum(df.toPandas()["c"].values.tolist())
-    print('total_number_of_tweets', total_number_of_tweets)     
+    print('total_number_of_tweets', total_number_of_tweets)
+
+    plt.rcParams.update({'axes.titlesize': 'small'})       
     plt.bar(x,y)
-    plt.title("Tcountry post about COVID19")
-    plt.xlabel("countrey")
-    plt.ylabel("counts")
+    plt.title("Top 10 country tweeting")
+    plt.xlabel("countrey", horizontalalignment='right')
     save_to_folder(df, folder, filename)
 
 
 def query2():
       filename = "query2p"
       folder = init_folder(filename)
-      tweets_dist_person = spark.sql(" SELECT   user.id_str, COUNT(user.id_str) AS count from table WHERE user.id_str is not null and entities.hashtags[0].text in ('coronavirus','Coronavirus','CoronaVirus','Coronavirus','COVID19') GROUP BY user.id_str ORDER BY count DESC")
-      x = tweets_dist_person.toPandas()["id_str"].values.tolist()[:10]
+      tweets_dist_person = spark.sql(" SELECT   user.screen_name, COUNT(user.name) AS count from table WHERE user.screen_name is not null and entities.hashtags[0].text in ('coronavirus','Coronavirus','CoronaVirus','Coronavirus','COVID19') and user.verified = 'true' GROUP BY user.screen_name ORDER BY count DESC")
+      x = tweets_dist_person.toPandas()["screen_name"].values.tolist()[:10]
       y = tweets_dist_person.toPandas()["count"].values.tolist()[:10]
       total_number_of_tweets = sum(tweets_dist_person.toPandas()["count"].values.tolist())
       print('total_number_of_tweets', total_number_of_tweets)
       figure = plt.figure()
       axes = figure.add_axes([0.35, 0.1, 0.60, 0.85])
+      plt.rcParams.update({'axes.titlesize': 'small'})
       plt.barh(x,y, color = 'blue')
-      plt.title("Top 10 Tweeters about coronavirus")
-      plt.ylabel("User id")
+      plt.title("Top 10 verified Tweeters about coronavirus")
+      plt.ylabel("User name")
       plt.xlabel("Number of Tweets")
       save_to_folder(tweets_dist_person, folder, filename)
 
@@ -87,15 +91,15 @@ def query4():
     filename = "query4p"
     folder = init_folder(filename)
 
-    tweets_from_country = spark.sql("SELECT place.country_code, COUNT(*) AS count FROM table WHERE place.country_code IS NOT NULL GROUP BY place.country_code ORDER BY count DESC")
+    tweets_from_country = spark.sql("SELECT place.country_code, COUNT(*) AS count FROM table WHERE place.country_code IS NOT NULL and entities.hashtags[0].text in ('coronavirus','Coronavirus','CoronaVirus','Coronavirus','COVID19') GROUP BY place.country_code ORDER BY count DESC")
 #display(tweets_from_country)
     x = tweets_from_country.toPandas()["country_code"].values.tolist()[:10]
     number_of_tweets_from_country = tweets_from_country.toPandas()["count"].values.tolist()
     y = number_of_tweets_from_country[:10]
 
     plt.rcParams.update({'axes.titlesize': 'small'})  
-    plt.barh(x,y, color = 'red')
-    plt.title("Top 10 Country Codes Available In Tweets")
+    plt.barh(x,y)
+    plt.title("Top 10 Country Tweets about Coronavirus")
     plt.ylabel("Countries")
     plt.xlabel("Number of Tweets")
     save_to_folder(tweets_from_country, folder, filename)
@@ -184,7 +188,7 @@ def query8():
 #print(y)
     plt.bar(x,y)
 
-
+    plt.title("tweets abot italy, USA, Inda and China")
     save_to_folder(dfcon1, folder, filename)
 
 def query9():
@@ -200,26 +204,62 @@ def query9():
     y = df3.toPandas()["c"].values.tolist()[:10]
 #print(y)
     plt.bar(x,y)
+
+    plt.title("How many each Hashtag is used ")
     save_to_folder(df3, folder, filename)
 
 
 
+app = Flask(__name__)
+@app.route('/')
+def home():
+   return render_template('index.html')
 
 
+@app.route('/query2')
+def home2():
+  return render_template('query2.html')
 
+@app.route('/query3')
+def home3():
+   return render_template('query3.html')
+
+@app.route('/query4')
+def home4():
+   return render_template('query4.html')
+
+@app.route('/query5')
+def home5():
+   return render_template('query5.html')
+
+@app.route('/query6')
+def home6():
+   return render_template('query6.html')
+
+@app.route('/query7')
+def home7():
+   return render_template('query7.html')
+
+@app.route('/query8')
+def home8():
+   return render_template('query8.html')
+
+@app.route('/query9')
+def home9():
+    return render_template('query9.html')
 
 if __name__ == "__main__":
 
 #   configuration part
-    plots_folder = './plots/'
+    plots_folder = '/Users/maha.alrasheed/twapp/static/images/'
     outs_folder = './outs/'
 
-    if not os.path.exists('plots'):
-       os.mkdir('plots')
+    if not os.path.exists(plots_folder):
+       os.mkdir(plots_folder)
        print('Directory plots created.')
     else:
        print('Directory plots already exists. Deleting the content')
-       os.system('rm -f ./plots/*') 
+       os.system('rm -f ./images/*') 
 
 
     if not os.path.exists('outs'):
@@ -228,6 +268,7 @@ if __name__ == "__main__":
     else:
        print('Directory outs already exists. Deleting the content')
        os.system('rm -rf ./outs/*') 
+
 
 
     print("Hello PySPark Application Started ...")
@@ -246,8 +287,12 @@ if __name__ == "__main__":
     query7()
     query8()
     query9()
-   
+
+
+
+
 
     spark.stop()
     print("PsSpark completed and cleaning up")
     os.system('rm -rf spark-warehouse')
+app.run(debug=True)

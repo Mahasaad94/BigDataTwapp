@@ -1,6 +1,0 @@
-Row(entities.hashtags AS `hashtags`[0].text=u'coronavirus', c=382)
-Row(entities.hashtags AS `hashtags`[0].text=u'COVID19', c=158)
-Row(entities.hashtags AS `hashtags`[0].text=u'Coronavirus', c=149)
-Row(entities.hashtags AS `hashtags`[0].text=u'CoronaVirus', c=33)
-Row(entities.hashtags AS `hashtags`[0].text=u'covid19', c=22)
-Row(entities.hashtags AS `hashtags`[0].text=u'neilferguson', c=18)
