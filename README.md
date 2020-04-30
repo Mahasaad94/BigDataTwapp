@@ -9,5 +9,5 @@
 .Pandas<br />
 
 # start the app 
-.$ python muTwaapp.py<br />
+.$ python myTwaapp.py<br />
 . got to http://127.0.0.1:5000/
