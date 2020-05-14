@@ -37,7 +37,7 @@ def save_to_folder(df, folder, filename ):
 
 
 
-# Top 10 languages used in tweets
+
 def query1():
     filename = "query1p"
     folder = init_folder(filename)
@@ -58,14 +58,14 @@ def query1():
 def query2():
       filename = "query2p"
       folder = init_folder(filename)
-      tweets_dist_person = spark.sql(" SELECT   user.screen_name, COUNT(user.name) AS count from table WHERE user.screen_name is not null and entities.hashtags[0].text in ('coronavirus','Coronavirus','CoronaVirus','Coronavirus','COVID19') and user.verified = 'true' GROUP BY user.screen_name ORDER BY count DESC")
+      tweets_dist_person = spark.sql(" SELECT   user.screen_name, COUNT(user.name) AS count from table WHERE user.screen_name is not null and entities.hashtags[0].text in ('coronavirus','Coronavirus','COVID19') and user.verified = 'true' GROUP BY user.screen_name ORDER BY count DESC")
       x = tweets_dist_person.toPandas()["screen_name"].values.tolist()[:10]
       y = tweets_dist_person.toPandas()["count"].values.tolist()[:10]
       total_number_of_tweets = sum(tweets_dist_person.toPandas()["count"].values.tolist())
       print('total_number_of_tweets', total_number_of_tweets)
-      figure = plt.figure()
-      axes = figure.add_axes([0.35, 0.1, 0.60, 0.85])
-      plt.rcParams.update({'axes.titlesize': 'small'})
+      #figure = plt.figure()
+      #axes = figure.add_axes([0.35, 0.1, 0.60, 0.85])
+      #plt.rcParams.update({'axes.titlesize': 'small'})
       plt.barh(x,y, color = 'blue')
       plt.title("Top 10 verified Tweeters about coronavirus")
       plt.ylabel("User name")
@@ -91,13 +91,13 @@ def query4():
     filename = "query4p"
     folder = init_folder(filename)
 
-    tweets_from_country = spark.sql("SELECT place.country_code, COUNT(*) AS count FROM table WHERE place.country_code IS NOT NULL and entities.hashtags[0].text in ('coronavirus','Coronavirus','CoronaVirus','Coronavirus','COVID19') GROUP BY place.country_code ORDER BY count DESC")
-#display(tweets_from_country)
+    tweets_from_country = spark.sql("SELECT place.country_code, COUNT(*) AS count FROM table WHERE place.country_code IS NOT NULL and entities.hashtags[0].text in ('coronavirus','Coronavirus','COVID19') GROUP BY place.country_code ORDER BY count DESC")
+    #display(tweets_from_country)
     x = tweets_from_country.toPandas()["country_code"].values.tolist()[:10]
     number_of_tweets_from_country = tweets_from_country.toPandas()["count"].values.tolist()
     y = number_of_tweets_from_country[:10]
 
-    plt.rcParams.update({'axes.titlesize': 'small'})  
+    #plt.rcParams.update({'axes.titlesize': 'small'})  
     plt.barh(x,y)
     plt.title("Top 10 Country Tweets about Coronavirus")
     plt.ylabel("Countries")
@@ -148,8 +148,9 @@ def query7():
     y = coordDF.toPandas()["coordinates[1]"].values.tolist()[:10]
 
     m = Basemap(projection='merc', llcrnrlat=-80, urcrnrlat=80, llcrnrlon=-180, urcrnrlon=180, lat_ts=20, resolution='c')
-  #  m.drawcoastlines()
-    #m.drawcountries()
+    m.drawcoastlines(color='0.5')
+    m.drawcountries(color='0.5')
+    m.drawstates(color='0.5')
    # m.drawlsmask(land_color='coral',ocean_color='aqua',lakes=True)
     m.fillcontinents(color='coral', lake_color='#FFFFFF')
 
@@ -157,7 +158,7 @@ def query7():
 
     for i in range(len(x)):
         x1, y1 = m(x[i], y[i])
-        m.plot(x1, y1, 'r.')
+        m.plot(x1, y1, 'b.')
 
     plt.title("GPS Coordinates of the Twitter Accounts")
 
@@ -209,6 +210,21 @@ def query9():
     save_to_folder(df3, folder, filename)
 
 
+def query10():
+    filename = "query10"
+    folder = init_folder(filename)
+
+    df = spark.sql("SELECT lang, COUNT(*) AS c FROM table WHERE lang IS NOT NULL GROUP BY lang ORDER BY c DESC")
+    x = df.toPandas()["lang"].values.tolist()[:10]
+    y = df.toPandas()["c"].values.tolist()[:10]
+    plt.barh(x,y)
+    # plt.title("Top ", len(x), " Devices")
+    plt.ylabel("language")
+    plt.xlabel("Number of tweets")
+    plt.title("Top used language Tweets")
+
+    save_to_folder(df, folder, filename)
+
 
 app = Flask(__name__)
 @app.route('/')
@@ -247,6 +263,10 @@ def home8():
 @app.route('/query9')
 def home9():
     return render_template('query9.html')
+
+@app.route('/query10')
+def home10():
+    return render_template('query10.html')
 
 if __name__ == "__main__":
 
@@ -287,7 +307,7 @@ if __name__ == "__main__":
     query7()
     query8()
     query9()
-
+    query10()
 
 
 
